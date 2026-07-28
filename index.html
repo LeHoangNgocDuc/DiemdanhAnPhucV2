@@ -450,24 +450,51 @@
   }
 
   function exportTransferExcel() {
-    const table = document.getElementById("table-transfer");
-    if (!table) return;
+    const originalTable = document.getElementById("table-transfer");
+    if (!originalTable) return;
+
+    // 1. Tạo một bản sao của bảng để không làm mất định dạng 350.000 trên giao diện Web
+    const tableClone = originalTable.cloneNode(true);
+    const rows = tableClone.getElementsByTagName('tr');
+
+    // 2. Duyệt qua các hàng để loại bỏ dấu chấm/phẩy trong cột số tiền
+    for (let i = 1; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName('td');
+      // Đảm bảo hàng này có đủ số cột (cột Số tiền nằm ở vị trí thứ 5, tức là index 4)
+      if (cells.length >= 5) {
+        // Lấy nội dung hiện tại và xóa mọi ký tự không phải là số
+        let rawAmount = cells[4].innerText.replace(/[^\d]/g, '');
+        cells[4].innerText = rawAmount; 
+      }
+    }
+
+    // 3. Đóng gói HTML và xuất file
     const html = `
       <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
       <head>
         <meta charset="utf-8">
-        <style>table { border-collapse: collapse; } th, td { border: 1px solid black; padding: 5px; } th { background-color: #f2f2f2; }</style>
+        <style>
+          table { border-collapse: collapse; } 
+          th, td { border: 1px solid black; padding: 5px; } 
+          th { background-color: #f2f2f2; }
+        </style>
       </head>
       <body>
         <h2>BÁO CÁO THU CHUYỂN KHOẢN</h2>
-        ${table.outerHTML}
+        ${tableClone.outerHTML}
       </body>
       </html>
     `;
+    
     const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'Danh_Sach_Chuyen_Khoan.xls';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    const a = document.createElement('a'); 
+    a.href = url; 
+    a.download = 'Danh_Sach_Chuyen_Khoan.xls';
+    document.body.appendChild(a); 
+    a.click(); 
+    document.body.removeChild(a); 
+    URL.revokeObjectURL(url);
   }
 
   function promoteYear() { 
