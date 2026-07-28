@@ -150,7 +150,7 @@
       <table><thead><tr><th style="text-align:center;width:50px;">STT</th><th>Họ tên</th><th>Lớp</th><th style="text-align:center">Đợt 1</th><th style="text-align:center">Đợt 2</th><th style="text-align:center">Đợt 3</th><th style="text-align:center">Đợt 4</th><th style="text-align:center">Đợt 5</th><th style="text-align:center">Đợt 6</th></tr></thead><tbody id="list-tl"></tbody></table>
     </div>
 
-    <!-- PANEL BÁO CÁO (ĐÃ CẬP NHẬT) -->
+    <!-- PANEL BÁO CÁO -->
     <div id="tk" class="panel">
       <div class="toolbar">
         <select id="tk-thang"></select><select id="tk-nam"></select><span style="margin:0 10px;color:#999">|</span>
@@ -167,22 +167,40 @@
         <div class="stat-card bg-red"><h3>CHƯA ĐÓNG</h3><div class="value" id="st-unpaid">0</div></div>
       </div>
 
-      <h3 class="section-title" style="color:#0d47a1; border-color:#0d47a1">📋 Báo cáo Số buổi dạy (Tháng đang chọn)</h3>
+      <h3 class="section-title" style="color:#0d47a1; border-color:#0d47a1">📋 1. Báo cáo Số buổi dạy (Tháng đang chọn)</h3>
       <table style="margin-bottom:30px;"><thead><tr style="background-color:#e3f2fd;"><th style="width:50px;text-align:center;">STT</th><th style="width:100px;text-align:center;">Lớp</th><th style="width:100px;text-align:center;">Số buổi</th><th>Chi tiết ngày học</th></tr></thead><tbody id="list-tk-lesson"></tbody></table>
 
-      <h3 class="section-title" style="color:#d32f2f">1. Danh sách Chưa đóng (Tháng này)</h3>
-      <table style="margin-bottom:30px;"><thead><tr><th style="text-align:center;width:50px;">STT</th><th>Họ tên</th><th>Lớp</th><th>SĐT Phụ huynh</th></tr></thead><tbody id="list-tk"></tbody></table>
-
-      <h3 class="section-title" style="color:green">2. Danh sách Đã đóng tiền</h3>
+      <h3 class="section-title" style="color:green">2. Danh sách Đã đóng tiền (Tiền mặt)</h3>
       <table style="margin-bottom:30px;">
-        <thead><tr><th style="text-align:center;width:50px;">STT</th><th>Họ tên</th><th>Lớp</th><th>Ngày đóng</th><th>Hình thức</th></tr></thead>
-        <tbody id="list-tk-paid"></tbody>
+        <thead><tr><th style="text-align:center;width:50px;">STT</th><th>Họ và tên</th><th>Lớp</th><th>Ngày nộp</th><th>Số tiền</th></tr></thead>
+        <tbody id="list-tk-paid-cash"></tbody>
       </table>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; margin-top: 25px;">
+        <h3 class="section-title" style="margin: 0; color:#1976d2; border-color:#1976d2">3. Danh sách Thu Chuyển Khoản</h3>
+        <button class="btn-green" onclick="exportTransferExcel()">📥 Xuất Excel</button>
+      </div>
+      <table id="table-transfer" style="margin-bottom:30px;">
+        <thead>
+          <tr>
+            <th style="text-align:center;width:50px;">STT</th>
+            <th>Họ và tên</th>
+            <th>Lớp</th>
+            <th>Ngày nộp</th>
+            <th>Số tiền</th>
+            <th>Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody id="list-tk-transfer"></tbody>
+      </table>
+
+      <h3 class="section-title" style="color:#d32f2f">4. Danh sách Chưa đóng (Tháng này)</h3>
+      <table style="margin-bottom:30px;"><thead><tr><th style="text-align:center;width:50px;">STT</th><th>Họ tên</th><th>Lớp</th><th>SĐT Phụ huynh</th></tr></thead><tbody id="list-tk"></tbody></table>
       
-      <h3 class="section-title" style="color:#c62828;background:#ffebee;padding:10px;">⚠️ 3. Nợ 2 tháng liên tiếp (<span id="prev-month-label"></span> & Tháng này)</h3>
+      <h3 class="section-title" style="color:#c62828;background:#ffebee;padding:10px;">⚠️ 5. Nợ 2 tháng liên tiếp (<span id="prev-month-label"></span> & Tháng này)</h3>
       <table style="margin-bottom:30px;"><thead><tr><th style="text-align:center;width:50px;">STT</th><th>Họ tên</th><th>Lớp</th><th>SĐT Phụ huynh</th></tr></thead><tbody id="list-tk-2m"></tbody></table>
 
-      <h3 class="section-title" style="color:#ff6f00">⚠️ 4. Học sinh vắng mặt từ 2 buổi liên tiếp</h3>
+      <h3 class="section-title" style="color:#ff6f00">⚠️ 6. Học sinh vắng mặt từ 2 buổi liên tiếp</h3>
       <table><thead><tr><th style="text-align:center;width:50px;">STT</th><th>Họ tên</th><th>Lớp</th><th>SĐT Phụ huynh</th><th>Số buổi vắng</th></tr></thead><tbody id="list-tk-absent"></tbody></table>
     </div>
 
@@ -211,6 +229,7 @@
       </div>
       <div class="row"><label>SĐT:</label><input id="m-phone"></div>
       <div class="row"><label>Email:</label><input id="m-email" type="email"></div>
+      <div class="row"><label>Học phí cố định (Để trống nếu dùng mức chung):</label><input id="m-fee" type="number" placeholder="Ví dụ: 300000"></div>
       <div class="row"><label>Ghi chú:</label><input id="m-note"></div>
       <div style="text-align:right;margin-top:25px;"><button type="button" class="btn-red" onclick="document.getElementById('modal-hs').style.display='none'">Hủy</button><button type="submit" class="btn-green">Lưu</button></div>
     </form>
@@ -221,10 +240,9 @@
   // ============================================
   // CẤU HÌNH API - LIÊN KẾT VỚI GOOGLE SHEET
   // ============================================
-  // THẦY ĐỨC LƯU Ý: THAY THẾ LINK DƯỚI ĐÂY BẰNG LINK WEB APP MỚI CỦA THẦY
-  const API_URL = "https://script.google.com/macros/s/AKfycbxmncm5RYQSHOJenN9nr7pwwG1OySBScytRRpBCh6cbgLngnhHQoxrAfOeP1ooQG-wKvg/exec";
+  // BẮT BUỘC THAY THẾ BẰNG URL WEB APP MỚI NHẤT
+  const API_URL = "https://script.google.com/macros/s/AKfycbx2F7voUBeH_hwnmTh4omz0a1F2S5wQiIHE4S5a7EFWYlMzK6ZXgv9NealrmkfMR9c2eA/exec";
 
-  // Hàm gọi API
   async function callAPI(action, params = {}, method = 'GET') {
     let url = API_URL;
     let options = { method: method };
@@ -247,9 +265,6 @@
     }
   }
 
-  // ============================================
-  // LOGIC GIAO DIỆN (FRONTEND)
-  // ============================================
   const KHOI = [6, 7, 8, 9, 10, 11, 12];
   let CURRENT_STUDENTS = [];
 
@@ -260,7 +275,6 @@
     ['dd-khoi','hp-khoi','m-khoi','tk-khoi','tl-khoi','hs-khoi'].forEach(id => { const el = document.getElementById(id); KHOI.forEach(k => el.add(new Option("Khối "+k, k))); });
     initDateSel('hp-thang','hp-nam'); initDateSel('tk-thang','tk-nam');
     
-    // Load dữ liệu ban đầu
     loadHS();
     callAPI('getSettings').then(s => {
       if(s && s.tuition_amount_default) document.getElementById('hp-def').value = s.tuition_amount_default;
@@ -276,7 +290,7 @@
   function showToast(msg, type='success') { const t = document.getElementById('toast'); t.innerHTML = (type==='success'?'✅ ':'❌ ') + msg; t.className = type + " show"; setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000); }
   function showError(e) { loading(false); showToast(e.message || "Có lỗi xảy ra", 'error'); }
 
-  // --- MODULE HỌC SINH ---
+  // --- HỌC SINH ---
   function loadHS() { 
     loading(true); 
     const term=document.getElementById('search-hs').value; 
@@ -292,63 +306,37 @@
     }).catch(showError);
   }
 
-  function openModal() { document.getElementById('modal-hs').style.display='flex'; document.getElementById('modal-title').innerText="Thêm Học Sinh"; document.getElementById('m-id').value=""; document.getElementById('m-name').value=""; document.getElementById('m-khoi').value=""; document.getElementById('m-lop').innerHTML="<option value=''>Chọn</option>"; document.getElementById('m-phone').value=""; document.getElementById('m-email').value=""; document.getElementById('m-note').value=""; }
+  function openModal() { document.getElementById('modal-hs').style.display='flex'; document.getElementById('modal-title').innerText="Thêm Học Sinh"; document.getElementById('m-id').value=""; document.getElementById('m-name').value=""; document.getElementById('m-khoi').value=""; document.getElementById('m-lop').innerHTML="<option value=''>Chọn</option>"; document.getElementById('m-phone').value=""; document.getElementById('m-email').value=""; document.getElementById('m-fee').value=""; document.getElementById('m-note').value=""; }
   
-  function editHS(id) { const s = CURRENT_STUDENTS.find(x => x.student_id == id); if (!s) return; document.getElementById('modal-hs').style.display='flex'; document.getElementById('modal-title').innerText="Cập nhật Học Sinh"; document.getElementById('m-id').value=s.student_id; document.getElementById('m-name').value=s.name; document.getElementById('m-khoi').value=s.grade; updateLop('m-khoi', 'm-lop'); document.getElementById('m-lop').value=s.class; document.getElementById('m-phone').value=formatPhone(s.parent_phone); document.getElementById('m-email').value=s.email; document.getElementById('m-note').value=s.note; }
+  function editHS(id) { const s = CURRENT_STUDENTS.find(x => x.student_id == id); if (!s) return; document.getElementById('modal-hs').style.display='flex'; document.getElementById('modal-title').innerText="Cập nhật Học Sinh"; document.getElementById('m-id').value=s.student_id; document.getElementById('m-name').value=s.name; document.getElementById('m-khoi').value=s.grade; updateLop('m-khoi', 'm-lop'); document.getElementById('m-lop').value=s.class; document.getElementById('m-phone').value=formatPhone(s.parent_phone); document.getElementById('m-email').value=s.email; document.getElementById('m-fee').value=s.custom_fee || ""; document.getElementById('m-note').value=s.note; }
   
   function saveNewHS() { 
     loading(true); 
     const id=document.getElementById('m-id').value; 
-    const data={id:id, name:document.getElementById('m-name').value, grade:document.getElementById('m-khoi').value, className:document.getElementById('m-lop').value, parent_phone:document.getElementById('m-phone').value, email:document.getElementById('m-email').value, note:document.getElementById('m-note').value}; 
-    
+    const data={
+      id:id, name:document.getElementById('m-name').value, 
+      grade:document.getElementById('m-khoi').value, 
+      className:document.getElementById('m-lop').value, 
+      parent_phone:document.getElementById('m-phone').value, 
+      email:document.getElementById('m-email').value, 
+      custom_fee:document.getElementById('m-fee').value, 
+      note:document.getElementById('m-note').value
+    }; 
     const action = id ? 'updateStudent' : 'addStudent';
     callAPI(action, data, 'POST').then(res => {
         loading(false);
-        if(res.success) {
-            document.getElementById('modal-hs').style.display='none';
-            showToast(id ? "Cập nhật thành công!" : "Đã thêm mới!");
-            loadHS();
-        } else {
-            showToast(res.message, 'error');
-        }
+        if(res.success) { document.getElementById('modal-hs').style.display='none'; showToast(id ? "Cập nhật thành công!" : "Đã thêm mới!"); loadHS(); } 
+        else { showToast(res.message, 'error'); }
     }).catch(showError);
   }
 
   function delHS(id) { 
-    if(confirm("CẢNH BÁO: Xóa học sinh này sẽ XÓA HẾT dữ liệu điểm danh và học phí liên quan.\nBạn có chắc không?")) { 
-        loading(true); 
-        callAPI('deleteStudent', {id: id}, 'POST').then(r=>{ 
-            loading(false); 
-            r.success ? (showToast("Đã xóa!"), loadHS()) : alert(r.message); 
-        }).catch(showError); 
+    if(confirm("CẢNH BÁO: Xóa học sinh này sẽ XÓA HẾT dữ liệu điểm danh và học phí.\nTiếp tục?")) { 
+        loading(true); callAPI('deleteStudent', {id: id}, 'POST').then(r=>{ loading(false); r.success ? (showToast("Đã xóa!"), loadHS()) : alert(r.message); }).catch(showError); 
     } 
   }
 
-  function downloadTemplate() { 
-      loading(true); 
-      callAPI('getTemplateUrl').then(r=>{ 
-          loading(false); 
-          if(r.success) window.open(r.url); 
-          else alert(r.message);
-      }).catch(showError); 
-  }
-
-  function importExcel(i) { 
-      const f=i.files[0]; if(!f) return; 
-      const r=new FileReader(); 
-      r.onload=function(e){ 
-          loading(true); 
-          const base64Data = e.target.result.split(',')[1];
-          callAPI('importStudentsFromExcel', {fileName:f.name, mimeType:f.type, base64: base64Data}, 'POST').then(res=>{ 
-              loading(false); 
-              showToast(res.success ? "Nhập "+res.count+" HS thành công" : "Lỗi: "+res.message, res.success?'success':'error'); 
-              loadHS(); 
-          }).catch(showError); 
-      }; 
-      r.readAsDataURL(f); 
-  }
-
-  // --- MODULE ĐIỂM DANH ---
+  // --- ĐIỂM DANH ---
   function loadDD() { 
       const k=document.getElementById('dd-khoi').value, l=document.getElementById('dd-lop').value; 
       if(!k||!l) return showToast("Chọn Khối/Lớp",'error'); 
@@ -362,48 +350,27 @@
   }
 
   function saveDD() { 
-      const trs=document.querySelectorAll('#list-dd tr'); 
-      const recs=[]; 
-      const d=document.getElementById('dd-date').value; 
+      const trs=document.querySelectorAll('#list-dd tr'); const recs=[]; const d=document.getElementById('dd-date').value; 
       trs.forEach(tr=>{ const rd=tr.querySelector('input:checked'); if(rd) recs.push({student_id:tr.dataset.id, name:tr.dataset.n, grade:tr.dataset.g, class:tr.dataset.c, date:d, status:rd.value}); }); 
       if(!recs.length) return showToast("Chưa chọn",'error'); 
       loading(true); 
-      callAPI('saveAttendance', {records: recs}, 'POST').then(r=>{ 
-          loading(false); 
-          showToast("Đã lưu!"+(r.email_sent?" (Đã gửi mail)":"")); 
-          loadDD(); 
-      }).catch(showError); 
+      callAPI('saveAttendance', {records: recs}, 'POST').then(r=>{ loading(false); showToast("Đã lưu!"); loadDD(); }).catch(showError); 
   }
 
-  // --- MODULE HỌC PHÍ ---
+  // --- HỌC PHÍ ---
   function loadHP() { 
       const k=document.getElementById('hp-khoi').value, l=document.getElementById('hp-lop').value; 
       if(!k||!l) return showToast("Chọn Khối/Lớp",'error'); 
       loading(true); 
       const m=document.getElementById('hp-thang').value, y=document.getElementById('hp-nam').value; 
       callAPI('getPaymentStatus', {grade: k, className: l, month: m, year: y}).then(d=>{ 
-          loading(false); 
-          const tb=document.getElementById('list-hp'); 
-          let da=0,tong=0; 
+          loading(false); const tb=document.getElementById('list-hp'); let da=0,tong=0; 
           tb.innerHTML=d.map((s,i)=>{ 
               if(s.is_paid){da++;tong+=parseFloat(s.amount||0);} 
-              
               let methodText = s.method === 'CK' ? '(Chuyển khoản)' : (s.method === 'TM' ? '(Tiền mặt)' : '');
               let statusHTML = s.is_paid ? `<span class="tag-green">Đã đóng <br><small>${methodText}</small></span>` : '<span class="tag-red">Chưa</span>';
-              
-              let actionHTML = s.is_paid ? '✔' : `
-                <button class="btn-green btn-sm" style="margin-bottom:5px; width:100%; justify-content:center;" onclick="pay('${s.student_id}', 'TM')">💵 Tiền mặt</button>
-                <button class="btn-blue btn-sm" style="width:100%; justify-content:center;" onclick="pay('${s.student_id}', 'CK')">💳 Chuyển khoản</button>
-              `;
-
-              return `<tr>
-                <td style="text-align:center">${i+1}</td>
-                <td><b>${s.name}</b></td>
-                <td>${statusHTML}</td>
-                <td>${Number(s.amount||0).toLocaleString()}</td>
-                <td>${s.paid_at||'-'}</td>
-                <td style="width:140px; text-align:center;">${actionHTML}</td>
-              </tr>`; 
+              let actionHTML = s.is_paid ? '✔' : `<button class="btn-green btn-sm" style="margin-bottom:5px; width:100%; justify-content:center;" onclick="pay('${s.student_id}', 'TM')">💵 Tiền mặt</button><button class="btn-blue btn-sm" style="width:100%; justify-content:center;" onclick="pay('${s.student_id}', 'CK')">💳 Chuyển khoản</button>`;
+              return `<tr><td style="text-align:center">${i+1}</td><td><b>${s.name}</b></td><td>${statusHTML}</td><td>${Number(s.amount||0).toLocaleString()}</td><td>${s.paid_at||'-'}</td><td style="width:140px; text-align:center;">${actionHTML}</td></tr>`; 
           }).join(''); 
           document.getElementById('hp-info').innerHTML=`Đã thu: <b>${da}/${d.length}</b>. Tổng: <b>${tong.toLocaleString()}</b> đ`; 
       }).catch(showError); 
@@ -411,42 +378,25 @@
 
   function pay(id, method) { 
       let methodLabel = method === 'TM' ? 'TIỀN MẶT' : 'CHUYỂN KHOẢN';
-      const amt=prompt(`Nhập số tiền thu bằng ${methodLabel}:`, document.getElementById('hp-def').value||0); 
+      const student = CURRENT_STUDENTS.find(x => x.student_id == id);
+      const defaultFee = (student && student.custom_fee) ? student.custom_fee : document.getElementById('hp-def').value;
+      const amt=prompt(`Nhập số tiền thu bằng ${methodLabel}:`, defaultFee || 0); 
       if(amt) { 
           loading(true); 
-          callAPI('markAsPaid', {
-              id: id, 
-              month: document.getElementById('hp-thang').value, 
-              year: document.getElementById('hp-nam').value, 
-              amount: amt,
-              method: method
-          }, 'POST').then(r=>{ 
-              loading(false); 
-              r.success ? (showToast(`Thu ${methodLabel} thành công!`), loadHP()) : alert(r.message); 
-          }).catch(showError); 
+          callAPI('markAsPaid', { id: id, month: document.getElementById('hp-thang').value, year: document.getElementById('hp-nam').value, amount: amt, method: method }, 'POST').then(r=>{ loading(false); r.success ? (showToast(`Thu ${methodLabel} thành công!`), loadHP()) : alert(r.message); }).catch(showError); 
       } 
   }
 
-  function saveFeeSetting() { 
-      callAPI('saveSettings', {tuition_amount_default:document.getElementById('hp-def').value}, 'POST').then(() => showToast("Đã lưu")).catch(showError); 
-  }
+  function saveFeeSetting() { callAPI('saveSettings', {tuition_amount_default:document.getElementById('hp-def').value}, 'POST').then(() => showToast("Đã lưu")).catch(showError); }
 
-  // --- MODULE TÀI LIỆU ---
+  // --- TÀI LIỆU ---
   function loadMaterials() { 
-      loading(true); 
-      callAPI('getMaterialStatus', {grade: document.getElementById('tl-khoi').value, className: document.getElementById('tl-lop').value}).then(r=>{ 
-          loading(false); 
-          document.getElementById('list-tl').innerHTML=r.data.map((s,i)=>`<tr><td style="text-align:center">${i+1}</td><td><b>${s.name}</b></td><td>${s.class_info}</td>${[1,2,3,4,5,6].map(j=>`<td style="text-align:center"><input type="checkbox" class="cb-material" ${s['batch'+j]?'checked':''} onchange="toggleMaterial('${s.student_id}',${j},this.checked)"></td>`).join('')}</tr>`).join(''); 
-      }).catch(showError); 
+      loading(true); callAPI('getMaterialStatus', {grade: document.getElementById('tl-khoi').value, className: document.getElementById('tl-lop').value}).then(r=>{ loading(false); document.getElementById('list-tl').innerHTML=r.data.map((s,i)=>`<tr><td style="text-align:center">${i+1}</td><td><b>${s.name}</b></td><td>${s.class_info}</td>${[1,2,3,4,5,6].map(j=>`<td style="text-align:center"><input type="checkbox" class="cb-material" ${s['batch'+j]?'checked':''} onchange="toggleMaterial('${s.student_id}',${j},this.checked)"></td>`).join('')}</tr>`).join(''); }).catch(showError); 
   }
 
-  function toggleMaterial(id,b,c) { 
-      callAPI('updateMaterialStatus', {id: id, batch: b, checked: c}, 'POST').then(r=>{ 
-          if(!r.success) { alert(r.message); loadMaterials(); } 
-      }); 
-  }
+  function toggleMaterial(id,b,c) { callAPI('updateMaterialStatus', {id: id, batch: b, checked: c}, 'POST').then(r=>{ if(!r.success) { alert(r.message); loadMaterials(); } }); }
 
-  // --- MODULE THỐNG KÊ ---
+  // --- THỐNG KÊ (NỢ, VẮNG, XUẤT EXCEL) ---
   function loadStats() {
     loading(true);
     const m = document.getElementById('tk-thang').value, y = document.getElementById('tk-nam').value;
@@ -466,12 +416,17 @@
         document.getElementById('st-unpaid').innerText = res.unpaid_count + " HS";
         document.getElementById('prev-month-label').innerText = res.prev_month_label || 'Tháng trước';
 
-        const tbPaid = document.getElementById('list-tk-paid');
-        if (res.paid_list.length === 0) tbPaid.innerHTML = '<tr><td colspan="5" style="text-align:center">Trống.</td></tr>';
-        else tbPaid.innerHTML = res.paid_list.map((s,i) => {
-            let methodStr = s.method === 'CK' ? '<span style="color:#1976d2;font-weight:bold">Chuyển khoản</span>' : (s.method === 'TM' ? '<span style="color:#2e7d32;font-weight:bold">Tiền mặt</span>' : '-');
-            return `<tr><td style="text-align:center">${i+1}</td><td><b>${s.name}</b></td><td>${s.class_info}</td><td>${s.paid_at}</td><td style="text-align:center">${methodStr}</td></tr>`;
-        }).join('');
+        const tbCash = document.getElementById('list-tk-paid-cash');
+        const tbTransfer = document.getElementById('list-tk-transfer');
+        
+        const cashList = res.paid_list.filter(s => s.method === 'TM');
+        const transferList = res.paid_list.filter(s => s.method === 'CK');
+
+        if (cashList.length === 0) tbCash.innerHTML = '<tr><td colspan="5" style="text-align:center">Trống.</td></tr>';
+        else tbCash.innerHTML = cashList.map((s,i) => `<tr><td style="text-align:center">${i+1}</td><td><b>${s.name}</b></td><td>${s.class_info}</td><td>${s.paid_at}</td><td>${Number(s.amount).toLocaleString()}</td></tr>`).join('');
+
+        if (transferList.length === 0) tbTransfer.innerHTML = '<tr><td colspan="6" style="text-align:center">Trống.</td></tr>';
+        else tbTransfer.innerHTML = transferList.map((s,i) => `<tr><td style="text-align:center">${i+1}</td><td><b>${s.name}</b></td><td>${s.class_info}</td><td>${s.paid_at}</td><td>${Number(s.amount).toLocaleString()}</td><td>${s.note || ''}</td></tr>`).join('');
 
         const tbUnpaid = document.getElementById('list-tk');
         if (res.unpaid_list.length === 0) tbUnpaid.innerHTML = '<tr><td colspan="4" style="text-align:center; color:green; font-weight:bold">Tuyệt vời! Tất cả đã đóng tiền.</td></tr>';
@@ -494,16 +449,30 @@
     }).catch(showError);
   }
 
+  function exportTransferExcel() {
+    const table = document.getElementById("table-transfer");
+    if (!table) return;
+    const html = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta charset="utf-8">
+        <style>table { border-collapse: collapse; } th, td { border: 1px solid black; padding: 5px; } th { background-color: #f2f2f2; }</style>
+      </head>
+      <body>
+        <h2>BÁO CÁO THU CHUYỂN KHOẢN</h2>
+        ${table.outerHTML}
+      </body>
+      </html>
+    `;
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'Danh_Sach_Chuyen_Khoan.xls';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+
   function promoteYear() { 
       const confirmCode = prompt("CẢNH BÁO: Nhập 'OK' để Lên lớp tự động:"); 
-      if (confirmCode === 'OK') { 
-          loading(true); 
-          callAPI('promoteNewSchoolYear', {}, 'POST').then(res => { 
-              loading(false); 
-              alert(res.message); 
-              location.reload(); 
-          }).catch(showError); 
-      } 
+      if (confirmCode === 'OK') { loading(true); callAPI('promoteNewSchoolYear', {}, 'POST').then(res => { loading(false); alert(res.message); location.reload(); }).catch(showError); } 
   }
 </script>
 </body>
